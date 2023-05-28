@@ -303,7 +303,7 @@ def train_GAN(cfg, train_loader,
         optimizer_discriminator.zero_grad()
         outputs = model(input)
         print("input shape:", input.shape, "target: ", target.shape, "outputs:", outputs.shape)
-        disc_real = discriminator(torch.cat([target, input_resized], axis=1))
+        disc_real = discriminator(torch.cat([target, input], axis=1))
         disc_fake = discriminator(torch.cat([outputs, input_resized], axis=1))
         loss_disc = get_loss_disc(disc_fake, disc_real)
 
