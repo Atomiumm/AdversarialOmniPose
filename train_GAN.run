@@ -12,4 +12,4 @@
 module purge
 module load gcc/8.4.0-cuda python/3.7.7 cuda/11.6.2
 source venv/bin/activate
-python train.py
+python train_GAN.py
