@@ -41,15 +41,15 @@ import models
 from models.omnipose   import get_omnipose
 from models.pose_hrnet import get_pose_net
 from discriminator.discriminator import Discriminator
-from torchvision.transforms.functional import resize 
+from torchvision.transforms.functional import resize
 import warnings
-warnings.filterwarnings("ignore") 
-from tqdm import tqdm 
+warnings.filterwarnings("ignore")
+from tqdm import tqdm
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train keypoints network')
-    
+
     parser.add_argument('--cfg',          help='experiment configure file name',
                         default='experiments/coco/omnipose_w48_128x96_edouard.yaml', type=str)
     parser.add_argument('--opts',         help="Modify config options using the command-line",
@@ -69,7 +69,7 @@ def main(args):
     logger, final_output_dir, tb_log_dir = create_logger(cfg, args.cfg, 'train')
 
     print('Model will be saved at: ',final_output_dir)
-    
+
     # cudnn related setting
     cudnn.benchmark = cfg.CUDNN.BENCHMARK
     torch.backends.cudnn.deterministic = cfg.CUDNN.DETERMINISTIC
@@ -91,8 +91,8 @@ def main(args):
     # logger.info(get_model_summary(model, dump_input))
 
     if torch.cuda.is_available():
-        model = model.cuda() 
-        discriminator = discriminator.cuda()   
+        model = model.cuda()
+        discriminator = discriminator.cuda()
 
     # Define loss function and optimizer
     criterion = JointsMSELoss(use_target_weight=cfg.LOSS.USE_TARGET_WEIGHT)
@@ -101,11 +101,11 @@ def main(args):
 
     # Data loading code
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-    
+
     train_dataset = eval('dataset.'+cfg.DATASET.DATASET)(
         cfg, cfg.DATASET.ROOT, cfg.DATASET.TRAIN_SET, True,
         transforms.Compose([transforms.ToTensor(), normalize,]))
-    
+
     valid_dataset = eval('dataset.'+cfg.DATASET.DATASET)(
         cfg, cfg.DATASET.ROOT, cfg.DATASET.TEST_SET, False,
         transforms.Compose([transforms.ToTensor(), normalize, ]) )
@@ -127,7 +127,7 @@ def main(args):
     best_perf_01 = 0.0
     best_model   = False
     last_epoch   = -1
-    
+
     optimizer_generator   = get_optimizer(cfg, model)
     optimizer_discriminator   = get_optimizer(cfg, discriminator)
 
@@ -188,14 +188,16 @@ def main(args):
         print(final_output_dir)
 
         # train for one epoch
-        train_GAN(cfg, train_loader, 
-                  model, 
-                  discriminator, 
-                  optimizer_discriminator, 
-                  optimizer_generator,  
-                  epoch,
-                  final_output_dir, 
-                  tb_log_dir)
+        train(cfg, train_loader, model, criterion, optimizer_discriminator, epoch,
+              final_output_dir, tb_log_dir)#, writer_dict)
+        # train_GAN(cfg, train_loader, 
+        #           model,
+        #           discriminator,
+        #           optimizer_discriminator,
+        #           optimizer_generator,
+        #           epoch,
+        #           final_output_dir,
+        #           tb_log_dir)
 
         # evaluate on validation set
 
@@ -203,7 +205,7 @@ def main(args):
             cfg, valid_loader, valid_dataset, cfg.DATASET.DATASET, model, criterion,
             final_output_dir, tb_log_dir, writer_dict)
         perf_indicator_01 = 0
-            
+
         if perf_indicator >= best_perf:
             best_perf = perf_indicator
             best_perf_01 = perf_indicator_01
@@ -271,15 +273,15 @@ def _resize_images_batch(images:torch.Tensor, dest_size:tuple) -> torch.Tensor:
 
 
 
-def train_GAN(cfg, train_loader, 
-                  model, 
-                  discriminator, 
-                  optimizer_discriminator, 
-                  optimizer_generator,  
+def train_GAN(cfg, train_loader,
+                  model,
+                  discriminator,
+                  optimizer_discriminator,
+                  optimizer_generator,
                   epoch,
-                  final_output_dir, 
+                  final_output_dir,
                   tb_log_dir):
-    
+
     tbar = tqdm(train_loader)
 
     print("Epoch ",str(epoch),":")
@@ -320,7 +322,7 @@ def train_GAN(cfg, train_loader,
         avg_gen_loss += loss_gen.item()
         loss_gen.backward()
         optimizer_generator.step()
-    
+
     print(f"loss gen: {avg_gen_loss / i}, loss disc: {avg_disc_loss / i}")
 
 
