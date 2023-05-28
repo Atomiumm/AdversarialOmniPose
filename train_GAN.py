@@ -291,10 +291,10 @@ def train_GAN(cfg, train_loader,
 
     for i, (input, target, target_weight, meta) in enumerate(tbar):
 
-        # input_resized = _resize_images_batch(input, dest_size=(cfg.MODEL.HEATMAP_SIZE[1], cfg.MODEL.HEATMAP_SIZE[0]))
+        input_resized = _resize_images_batch(input, dest_size=(cfg.MODEL.HEATMAP_SIZE[1], cfg.MODEL.HEATMAP_SIZE[0]))
         if torch.cuda.is_available():
-            input  = input.cuda()
-            # input_resized  = input_resized.cuda()
+            # input  = input.cuda()
+            input  = input_resized.cuda()
             target = target.cuda()
             target_weight = target_weight.cuda()
 
