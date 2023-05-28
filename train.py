@@ -133,6 +133,7 @@ def main(args):
     if cfg.AUTO_RESUME and os.path.exists(checkpoint_file):
         logger.info("=> loading checkpoint '{}'".format(checkpoint_file))
         checkpoint = torch.load(checkpoint_file)
+        print(checkpoint.keys())
         print('Loading checkpoint with accuracy of ', checkpoint['perf'], 'at epoch ',checkpoint['epoch'])
         begin_epoch = checkpoint['epoch']
         best_perf = checkpoint['perf']
