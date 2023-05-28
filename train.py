@@ -133,7 +133,7 @@ def main(args):
     if cfg.AUTO_RESUME and os.path.exists(checkpoint_file):
         logger.info("=> loading checkpoint '{}'".format(checkpoint_file))
         checkpoint = torch.load(checkpoint_file)
-        print(checkpoint.keys())
+
         print('Loading checkpoint with accuracy of ', checkpoint['perf'], 'at epoch ',checkpoint['epoch'])
         begin_epoch = checkpoint['epoch']
         best_perf = checkpoint['perf']
@@ -153,7 +153,8 @@ def main(args):
         print('best_perf', best_perf)
         print('last_epoch',last_epoch)
 
-        optimizer.load_state_dict(checkpoint['optimizer'])
+        print(checkpoint["optimizer"])
+        #optimizer.load_state_dict(checkpoint['optimizer'])
         logger.info("=> loaded checkpoint '{}' (epoch {})".format(checkpoint_file, checkpoint['epoch']))
 
     lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(
