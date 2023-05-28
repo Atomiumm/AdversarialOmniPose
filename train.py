@@ -49,7 +49,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Train keypoints network')
     
     parser.add_argument('--cfg',          help='experiment configure file name',
-                        default='experiments/mpii/hrnet/w48_256x256_adam_lr1e-3.yaml', type=str)
+                        default='experiments/coco/omnipose_w48_128x96_edouard.yaml', type=str)
     parser.add_argument('--opts',         help="Modify config options using the command-line",
                         default=None, nargs=argparse.REMAINDER)
     parser.add_argument('--modelDir',     help='model directory', type=str, default='')
