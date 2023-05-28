@@ -188,9 +188,9 @@ def main(args):
         print(final_output_dir)
 
         # train for one epoch
-        train(cfg, train_loader, model, criterion, optimizer_discriminator, epoch,
+        train(cfg, train_loader, model, criterion, optimizer_generator, epoch,
               final_output_dir, tb_log_dir)#, writer_dict)
-        # train_GAN(cfg, train_loader, 
+        # train_GAN(cfg, train_loader,
         #           model,
         #           discriminator,
         #           optimizer_discriminator,
