@@ -153,8 +153,8 @@ def main(args):
         print('best_perf', best_perf)
         print('last_epoch',last_epoch)
 
-        print(checkpoint["optimizer"])
-        #optimizer.load_state_dict(checkpoint['optimizer'])
+        print(checkpoint["optimizer"].keys())
+        optimizer.load_state_dict(checkpoint['optimizer'])
         logger.info("=> loaded checkpoint '{}' (epoch {})".format(checkpoint_file, checkpoint['epoch']))
 
     lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(
